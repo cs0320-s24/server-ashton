@@ -47,4 +47,4 @@ fi
 # NOTE: You MUST package your Server at the path specified below, if you do not, it likely
 # will NOT run. If you change the package structure of your Server class. You must change this path
 # as well.
-java -ea -cp "$TARGET$PATHSEP$CP" edu.brown.cs.student.main.server.Server "$@"
+java -ea -cp "$TARGET$PATHSEP$CP" edu.brown.cs.student.main.edu.brown.cs.student.main.server.Server "$@"
