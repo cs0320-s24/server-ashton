@@ -1,11 +1,10 @@
 package edu.brown.cs.student.main.server.handlers.CSVHandling;
 
+import java.util.HashMap;
+import java.util.Map;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class ViewCSVHandler implements Route {
 
@@ -14,6 +13,7 @@ public class ViewCSVHandler implements Route {
   public ViewCSVHandler(CSVHandling handling) {
     this.handling = handling;
   }
+
   @Override
   public Object handle(Request request, Response response) {
     Map<String, Object> responseMap = new HashMap<>();

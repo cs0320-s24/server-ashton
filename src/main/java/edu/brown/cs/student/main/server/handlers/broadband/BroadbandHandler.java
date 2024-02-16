@@ -3,29 +3,36 @@ package edu.brown.cs.student.main.server.handlers.broadband;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
-import spark.Request;
-import spark.Response;
-import spark.Route;
-
+import edu.brown.cs.student.main.server.StateCountyInit;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import spark.Request;
+import spark.Response;
+import spark.Route;
 
 public class BroadbandHandler implements Route {
 
+  private final Map<String, String> stateToCode;
+  private final StateCountyInit init;
+
+  public BroadbandHandler(StateCountyInit init) {
+    this.init = init;
+    this.stateToCode = this.init.getMap();
+  }
+
   @Override
   public Object handle(Request request, Response response) {
-    //gets the query params for state and county
+    // gets the query params for state and county
     String state = request.queryParams("state");
     String county = request.queryParams("county");
 
@@ -38,6 +45,12 @@ public class BroadbandHandler implements Route {
 
     try {
       String broadbandJson = this.sendRequest(state, county);
+
+      if (broadbandJson.equals("Location not found")) {
+        responseMap.put("failure", "Location not found");
+        return responseMap;
+      }
+
       Broadband broadband = BroadbandAPIUtilities.deserializeCensus(broadbandJson);
 
       responseMap.put("result", "success");
@@ -59,28 +72,45 @@ public class BroadbandHandler implements Route {
   }
 
   private String sendRequest(String state, String county)
-          throws URISyntaxException, IOException, InterruptedException {
+      throws URISyntaxException, IOException, InterruptedException {
+    String stateCode = this.stateToCode.get(state);
+
+    if (stateCode == null) {
+      return "Location not found";
+    }
+
+    Map<String, String> countyToCode = this.init.parseCountyData(stateCode);
+    String countyCode = countyToCode.get(county);
+
+    if (countyCode == null) {
+      return "Location not found";
+    }
+
     HttpRequest buildACSApiRequest =
-            HttpRequest.newBuilder()
-                    .uri(new URI("https://api.census.gov/data/2021/acs/acs1/subject/" +
-                            "variables?get=NAME,S2802_C03_022E&for=county:" + county + "&in=state:" + state))
-                    .GET()
-                    .build();
+        HttpRequest.newBuilder()
+            .uri(
+                new URI(
+                    "https://api.census.gov/data/2021/acs/acs1/subject/"
+                        + "variables?get=NAME,S2802_C03_022E&for=county:"
+                        + countyCode
+                        + "&in=state:"
+                        + stateCode))
+            .GET()
+            .build();
 
     HttpResponse<String> sentACSApiResponse =
-            HttpClient.newBuilder()
-                    .build()
-                    .send(buildACSApiRequest, HttpResponse.BodyHandlers.ofString());
-    System.out.println(sentACSApiResponse.body());
-    return this.serializeJson(sentACSApiResponse.body());
+        HttpClient.newBuilder()
+            .build()
+            .send(buildACSApiRequest, HttpResponse.BodyHandlers.ofString());
+
+    return this.convertJson(sentACSApiResponse.body());
   }
 
-  private String serializeJson(String json) {
+  private String convertJson(String json) {
     try {
       Moshi moshi = new Moshi.Builder().build();
-      JsonAdapter<List<List<String>>> adapter = moshi.adapter(
-              Types.newParameterizedType(List.class, List.class, String.class)
-      );
+      JsonAdapter<List<List<String>>> adapter =
+          moshi.adapter(Types.newParameterizedType(List.class, List.class, String.class));
       List<List<String>> data = adapter.fromJson(json);
       List<Map<String, String>> jsonData = new ArrayList<>();
       if (data != null && data.size() >= 2) {
@@ -93,12 +123,10 @@ public class BroadbandHandler implements Route {
           jsonData.add(rowMap);
         }
       }
-      JsonAdapter<List<Map<String, String>>> jsonAdapter = moshi.adapter(
-              Types.newParameterizedType(List.class, Map.class)
-      );
+      JsonAdapter<List<Map<String, String>>> jsonAdapter =
+          moshi.adapter(Types.newParameterizedType(List.class, Map.class));
       String serializedJson = jsonAdapter.toJson(jsonData);
 
-      // Trim the outermost brackets
       if (serializedJson.startsWith("[") && serializedJson.endsWith("]")) {
         serializedJson = serializedJson.substring(1, serializedJson.length() - 1);
       }

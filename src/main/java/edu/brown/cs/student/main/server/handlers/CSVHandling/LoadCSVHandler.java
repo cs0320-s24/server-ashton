@@ -2,21 +2,19 @@ package edu.brown.cs.student.main.server.handlers.CSVHandling;
 
 import edu.brown.cs.student.main.CSV.CSVParser;
 import edu.brown.cs.student.main.CSV.Creator;
-import spark.Request;
-import spark.Response;
-import spark.Route;
-
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import spark.Request;
+import spark.Response;
+import spark.Route;
 
 public class LoadCSVHandler implements Route {
 
   private CSVHandling handling;
+
   public LoadCSVHandler(CSVHandling handling) {
     this.handling = handling;
   }
