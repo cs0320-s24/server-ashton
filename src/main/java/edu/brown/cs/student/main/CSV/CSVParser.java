@@ -1,4 +1,4 @@
-package Parse;
+package edu.brown.cs.student.main.CSV;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 public class CSVParser<T> {
   private final BufferedReader fileReader;
   private final CreatorFromRow<T> creatorFromRow;
-  private final int numColumns;
+  private int numColumns;
 
   /**
    * This is the CSV parser class that handles the functionality of parsing a CSV into a generic
@@ -20,10 +20,10 @@ public class CSVParser<T> {
    * @param creatorFromRow - the object used to convert each line into a row object
    * @param numColumns - the number of columns expected in the csv
    */
-  public CSVParser(Reader fileReader, CreatorFromRow<T> creatorFromRow, int numColumns) {
+  public CSVParser(Reader fileReader, CreatorFromRow<T> creatorFromRow) {
     this.fileReader = new BufferedReader(fileReader);
     this.creatorFromRow = creatorFromRow;
-    this.numColumns = numColumns;
+    this.numColumns = 0;
   }
 
   /**
@@ -35,12 +35,17 @@ public class CSVParser<T> {
    */
   public List<T> parse() throws IOException, FactoryFailureException {
     List<T> result = new ArrayList<>();
+    boolean isFirst = true;
 
     String line;
     try {
       line = this.fileReader.readLine();
       while (line != null) {
         List<String> parsedLine = parseLine(line);
+        if (isFirst) {
+          this.numColumns = parsedLine.size();
+        }
+        isFirst = false;
         try {
           T createdObject = this.creatorFromRow.create(parsedLine, this.numColumns);
           if (createdObject != null) {

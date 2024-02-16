@@ -1,4 +1,4 @@
-package Parse;
+package edu.brown.cs.student.main.CSV;
 
 import java.util.List;
 
