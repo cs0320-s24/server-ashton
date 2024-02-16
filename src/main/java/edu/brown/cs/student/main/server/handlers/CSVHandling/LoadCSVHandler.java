@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main.server.handlers;
+package edu.brown.cs.student.main.server.handlers.CSVHandling;
 
 import edu.brown.cs.student.main.CSV.CSVParser;
 import edu.brown.cs.student.main.CSV.Creator;
@@ -9,7 +9,9 @@ import spark.Route;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class LoadCSVHandler implements Route {
@@ -20,6 +22,9 @@ public class LoadCSVHandler implements Route {
     String numColumns = request.queryParams("numcolumns");
     System.out.println(filepath);
     FileReader fileReader = null;
+
+    Map<String, Object> responseMap = new HashMap<>();
+
     try {
       fileReader = new FileReader(filepath);
     } catch (FileNotFoundException e) {
@@ -32,6 +37,8 @@ public class LoadCSVHandler implements Route {
     } catch (Exception e) {
       System.out.println("idk yet");
     }
-    return null;
+
+    responseMap.put("result", "success");
+    return responseMap;
   }
 }

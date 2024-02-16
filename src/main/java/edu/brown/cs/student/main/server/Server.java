@@ -3,7 +3,7 @@ package edu.brown.cs.student.main.server;
 import static spark.Spark.after;
 
 import edu.brown.cs.student.main.server.handlers.broadband.BroadbandHandler;
-import edu.brown.cs.student.main.server.handlers.LoadCSVHandler;
+import edu.brown.cs.student.main.server.handlers.CSVHandling.LoadCSVHandler;
 import spark.Spark;
 
 /**
@@ -17,7 +17,7 @@ import spark.Spark;
  */
 public class Server {
   public static void main(String[] args) {
-    int port = 1710;
+    int port = 3232;
     Spark.port(port);
 
     after(

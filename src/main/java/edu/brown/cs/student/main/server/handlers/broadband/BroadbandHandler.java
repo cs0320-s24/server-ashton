@@ -34,7 +34,7 @@ public class BroadbandHandler implements Route {
       String broadbandJson = this.sendRequest(state, county);
       Broadband broadband = BroadbandAPIUtilities.deserializeCensus(broadbandJson);
 
-      responseMap.put("result", "Success");
+      responseMap.put("result", "success");
       responseMap.put("Broadband Access", broadband);
 
       LocalDateTime currentDateTime = LocalDateTime.now();
