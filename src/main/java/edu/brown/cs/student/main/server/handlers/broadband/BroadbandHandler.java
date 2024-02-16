@@ -30,6 +30,12 @@ public class BroadbandHandler implements Route {
     String county = request.queryParams("county");
 
     Map<String, Object> responseMap = new HashMap<>();
+
+    if (state == null || county == null) {
+      responseMap.put("result", "failure: state or county not specified");
+      return responseMap;
+    }
+
     try {
       String broadbandJson = this.sendRequest(state, county);
       Broadband broadband = BroadbandAPIUtilities.deserializeCensus(broadbandJson);

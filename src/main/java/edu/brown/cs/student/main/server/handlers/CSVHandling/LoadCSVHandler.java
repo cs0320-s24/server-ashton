@@ -16,11 +16,15 @@ import java.util.Map;
 
 public class LoadCSVHandler implements Route {
 
+  private CSVHandling handling;
+  public LoadCSVHandler(CSVHandling handling) {
+    this.handling = handling;
+  }
+
   @Override
   public Object handle(Request request, Response response) {
     String filepath = request.queryParams("filepath");
-    String numColumns = request.queryParams("numcolumns");
-    System.out.println(filepath);
+
     FileReader fileReader = null;
 
     Map<String, Object> responseMap = new HashMap<>();
@@ -33,7 +37,7 @@ public class LoadCSVHandler implements Route {
     CSVParser<List<String>> parser = new CSVParser<>(fileReader, new Creator());
     try {
       List<List<String>> parsedData = parser.parse();
-      System.out.println(parsedData);
+      this.handling.setParsedData(parsedData);
     } catch (Exception e) {
       System.out.println("idk yet");
     }

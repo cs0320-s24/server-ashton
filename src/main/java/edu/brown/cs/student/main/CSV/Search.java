@@ -1,10 +1,11 @@
 package edu.brown.cs.student.main.CSV;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Search {
 
-  private final String target;
+  private String target;
   private final List<List<String>> parsedData;
 
   /**
@@ -30,38 +31,55 @@ public class Search {
 
     this.parsedData = parsedData;
 
-    if (!columnSpec.equals("")) {
+//    if (!columnSpec.equals("")) {
+//      try {
+//        columnIndex = Integer.parseInt(columnSpec);
+//        this.search(columnIndex, numColumns);
+//      } catch (NumberFormatException e) {
+//        if (hasHeaders) {
+//          this.search(columnSpec);
+//        }
+//      }
+//    } else {
+//      this.search();
+//    }
+
+  }
+
+  public List<String> callSearch(String target, String columnSpec, int numColumns, boolean hasHeaders) {
+    this.target = target;
+    int columnIndex;
+    if (columnSpec != null) {
       try {
         columnIndex = Integer.parseInt(columnSpec);
-        this.search(columnIndex, numColumns);
+        return this.search(columnIndex, numColumns);
       } catch (NumberFormatException e) {
         if (hasHeaders) {
-          this.search(columnSpec);
+          return this.search(columnSpec);
         }
       }
-    } else {
-      this.search();
     }
+    return this.search();
   }
 
   /**
    * Used for a basic search implementation with no column specification. This method loops through
    * the parsed data to find the target, printing it if it does or printing that it was not found
    */
-  public void search() {
-    boolean found = false;
+  public List<String> search() {
     for (List<String> parsedDatum : this.parsedData) {
       for (int j = 0; j < parsedDatum.size(); j++) {
         if (parsedDatum.get(j).equalsIgnoreCase(this.target)) {
-          found = true;
-          this.printRow(parsedDatum);
+          //this.printRow(parsedDatum);
+          return parsedDatum;
         }
       }
     }
 
-    if (!found) {
-      System.out.println("Target was not found");
-    }
+    List<String> notFound = new ArrayList<>();
+    notFound.add("Target was not found");
+    return notFound;
+    //System.out.println("Target was not found");
   }
 
   /**
@@ -72,21 +90,26 @@ public class Search {
    * @param numColumns - expected number of columns
    * @throws ArrayIndexOutOfBoundsException
    */
-  public void search(int columnIndex, int numColumns) throws ArrayIndexOutOfBoundsException {
+  public List<String> search(int columnIndex, int numColumns) throws ArrayIndexOutOfBoundsException {
     if (columnIndex < 0 || columnIndex >= numColumns) {
       throw new ArrayIndexOutOfBoundsException();
     }
-    boolean found = false;
+    //boolean found = false;
     for (List<String> parsedDatum : this.parsedData) {
       if (parsedDatum.get(columnIndex).toLowerCase().equals(this.target)) {
-        this.printRow(parsedDatum);
-        found = true;
+//        this.printRow(parsedDatum);
+//        found = true;
+        return parsedDatum;
       }
     }
 
-    if (!found) {
-      System.out.println("Target was not found");
-    }
+//    if (!found) {
+//      System.out.println("Target was not found");
+//    }
+
+    List<String> notFound = new ArrayList<>();
+    notFound.add("Target was not found");
+    return notFound;
   }
 
   /**
@@ -94,7 +117,7 @@ public class Search {
    *
    * @param headerName - the header to search
    */
-  public void search(String headerName) {
+  public List<String> search(String headerName) {
     boolean found = false;
 
     int columnIndex = -1;
@@ -106,20 +129,23 @@ public class Search {
     }
 
     if (columnIndex == -1) {
-      System.out.println("Header '" + headerName + "' not found");
-      return;
+      //System.out.println("Header '" + headerName + "' not found");
+      List<String> notFound = new ArrayList<>();
+      notFound.add("Header '" + headerName + "' not found");
+      return notFound;
     }
 
     for (int j = 1; j < this.parsedData.size(); j++) {
       if (this.parsedData.get(j).get(columnIndex).equalsIgnoreCase(this.target)) {
-        found = true;
-        this.printRow(this.parsedData.get(j));
+//        found = true;
+//        this.printRow(this.parsedData.get(j));
+        return this.parsedData.get(j);
       }
     }
 
-    if (!found) {
-      System.out.println("Target was not found");
-    }
+    List<String> notFound = new ArrayList<>();
+    notFound.add("Target was not found");
+    return notFound;
   }
 
   /**
