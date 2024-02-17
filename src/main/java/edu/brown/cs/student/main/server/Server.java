@@ -6,6 +6,7 @@ import edu.brown.cs.student.main.server.handlers.CSVHandling.CSVHandling;
 import edu.brown.cs.student.main.server.handlers.CSVHandling.LoadCSVHandler;
 import edu.brown.cs.student.main.server.handlers.CSVHandling.SearchCSVHandler;
 import edu.brown.cs.student.main.server.handlers.CSVHandling.ViewCSVHandler;
+import edu.brown.cs.student.main.server.handlers.broadband.ACSData;
 import edu.brown.cs.student.main.server.handlers.broadband.BroadbandHandler;
 import edu.brown.cs.student.main.server.handlers.broadband.StateCountyInit;
 import spark.Spark;
@@ -34,7 +35,7 @@ public class Server {
 
     CSVHandling csvHandler = new CSVHandling(null);
 
-    Spark.get("broadband", new BroadbandHandler(new StateCountyInit()));
+    Spark.get("broadband", new BroadbandHandler(new ACSData(new StateCountyInit())));
     Spark.get("loadcsv", new LoadCSVHandler(csvHandler));
     Spark.get("searchcsv", new SearchCSVHandler(csvHandler));
     Spark.get("viewcsv", new ViewCSVHandler(csvHandler));

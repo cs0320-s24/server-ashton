@@ -2,7 +2,9 @@ package edu.brown.cs.student.main;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import edu.brown.cs.student.main.server.handlers.broadband.ACSData;
 import edu.brown.cs.student.main.server.handlers.broadband.BroadbandHandler;
+import edu.brown.cs.student.main.server.handlers.broadband.MockACSData;
 import edu.brown.cs.student.main.server.handlers.broadband.StateCountyInit;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,7 +17,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import spark.Spark;
 
@@ -25,9 +26,20 @@ public class ACSTest {
     Logger.getLogger("").setLevel(Level.WARNING);
   }
 
-  @BeforeEach
-  public void setup() {
-    Spark.get("broadband", new BroadbandHandler(new StateCountyInit()));
+  /** Setup for a real API connection */
+  public void setupReal() {
+    Spark.get("broadband", new BroadbandHandler(new ACSData(new StateCountyInit())));
+    Spark.init();
+    Spark.awaitInitialization();
+  }
+
+  /**
+   * Setup for a mocked connection
+   *
+   * @param mockedResponse
+   */
+  public void setupMock(String mockedResponse) {
+    Spark.get("broadband", new BroadbandHandler(new MockACSData(mockedResponse)));
     Spark.init();
     Spark.awaitInitialization();
   }
@@ -93,6 +105,7 @@ public class ACSTest {
    */
   @Test
   public void testConnection() throws IOException {
+    this.setupReal();
     HttpURLConnection clientConnection = tryRequest("broadband");
 
     assertEquals(200, clientConnection.getResponseCode());
@@ -107,6 +120,7 @@ public class ACSTest {
    */
   @Test
   public void testFailedConnection() throws IOException {
+    this.setupReal();
     HttpURLConnection clientConnection = tryRequest("broad-band");
 
     assertEquals(404, clientConnection.getResponseCode());
@@ -114,8 +128,14 @@ public class ACSTest {
     clientConnection.disconnect();
   }
 
+  /**
+   * Test for a basic query
+   *
+   * @throws IOException
+   */
   @Test
   public void testBasicQuery() throws IOException {
+    this.setupReal();
     HttpURLConnection clientConnection =
         tryRequest(
             "broadband?state=South%20Carolina&county=York" + "%20County,%20South%20Carolina");
@@ -128,11 +148,120 @@ public class ACSTest {
             + "South Carolina is 91.6 percent}");
   }
 
+  /**
+   * Test for what should happen when the location is not found
+   *
+   * @throws IOException
+   */
   @Test
   public void testLocationNotFound() throws IOException {
+    this.setupReal();
     HttpURLConnection clientConnection =
         tryRequest("broadband?state=%20Carolina&county=York" + "%20County,%20South%20Carolina");
     assertEquals(200, clientConnection.getResponseCode());
     assertEquals(this.getResponse(clientConnection), "{failure=Location not found}");
+  }
+
+  /**
+   * Testing for location not found using teh mocked source
+   *
+   * @throws IOException
+   */
+  @Test
+  public void testStateAndCountyNotGiven() throws IOException {
+    this.setupMock("Location not found");
+    HttpURLConnection clientConnection =
+        tryRequest("broadband?state=bruh%20Carolina&county=York" + "%20County,%20South%20Carolina");
+    assertEquals(200, clientConnection.getResponseCode());
+    assertEquals(this.getResponse(clientConnection), "{failure=Location not found}");
+  }
+
+  /**
+   * Testing the handler using a mock json
+   *
+   * @throws IOException
+   */
+  @Test
+  public void testHandler() throws IOException {
+    this.setupMock(
+        "{\"county\":\"091\",\"state\":\"45\",\"S2802_C03_022E\":\"91.6\",\"NAME\":\"York County, "
+            + "South Carolina\"}");
+    HttpURLConnection clientConnection =
+        tryRequest(
+            "broadband?state=South%20Carolina&county=York" + "%20County,%20South%20Carolina");
+    assertEquals(200, clientConnection.getResponseCode());
+    assertEquals(
+        this.getResponse(clientConnection),
+        "{result=success, Time of Query="
+            + this.getTime()
+            + ", Broadband Access=The estimated broadband access in York County, "
+            + "South Carolina is 91.6 percent}");
+  }
+
+  /**
+   * Testing the handler further using a mock json for a different location
+   *
+   * @throws IOException
+   */
+  @Test
+  public void testHandlerNewLoc() throws IOException {
+    this.setupMock(
+        "{\"county\":\"037\",\"state\":\"06\",\"S2802_C03_022E\":\"89.9\",\"NAME\":\"Los Angeles County, "
+            + "California\"}");
+    HttpURLConnection clientConnection =
+        tryRequest(
+            "broadband?state=South%20Carolina&county=York" + "%20County,%20South%20Carolina");
+    assertEquals(200, clientConnection.getResponseCode());
+    assertEquals(
+        this.getResponse(clientConnection),
+        "{result=success, Time of Query="
+            + this.getTime()
+            + ", Broadband Access=The estimated broadband access in Los Angeles County, "
+            + "California is 89.9 percent}");
+  }
+
+  /**
+   * Testing the handler for returning a null json using the mocked data
+   *
+   * @throws IOException
+   */
+  @Test
+  public void testNullJson() throws IOException {
+    this.setupMock(null);
+    HttpURLConnection clientConnection =
+        tryRequest(
+            "broadband?state=South%20Carolina&county=York" + "%20County,%20South%20Carolina");
+    assertEquals(200, clientConnection.getResponseCode());
+    assertEquals(this.getResponse(clientConnection), "{result=failure: error retrieving data}");
+  }
+
+  /**
+   * Testing for no state specified
+   *
+   * @throws IOException
+   */
+  @Test
+  public void testNoState() throws IOException {
+    this.setupMock(null);
+    HttpURLConnection clientConnection =
+        tryRequest("broadband?county=York" + "%20County,%20South%20Carolina");
+    assertEquals(200, clientConnection.getResponseCode());
+    assertEquals(
+        this.getResponse(clientConnection), "{result=failure: state or county not specified}");
+  }
+
+  /**
+   * Testing for no county specified
+   *
+   * @throws IOException
+   */
+  @Test
+  public void testNoCounty() throws IOException {
+    this.setupMock(null);
+    HttpURLConnection clientConnection =
+        tryRequest("broadband?state=South%20Carolina" + "%20County,%20South%20Carolina");
+    assertEquals(200, clientConnection.getResponseCode());
+    assertEquals(
+        this.getResponse(clientConnection), "{result=failure: state or county not specified}");
   }
 }

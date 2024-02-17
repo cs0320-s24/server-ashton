@@ -1,15 +1,12 @@
 package edu.brown.cs.student.main.server.handlers.broadband;
 
-import spark.Request;
-import spark.Response;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
-import java.util.Map;
-
-/**
- * An interface that defines how data should be retrieved
- */
+/** An interface that defines how data should be retrieved */
 public interface DataReturner {
 
-    //the method that returns the data that must be overridden
-    Map<String, Object> getData(Request request, Response response);
+  // the method that returns the data that must be overridden
+  String sendRequest(String state, String county)
+      throws URISyntaxException, IOException, InterruptedException;
 }
