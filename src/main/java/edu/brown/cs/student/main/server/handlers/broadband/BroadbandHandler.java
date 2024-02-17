@@ -1,5 +1,6 @@
 package edu.brown.cs.student.main.server.handlers.broadband;
 
+import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
@@ -12,10 +13,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -45,6 +44,11 @@ public class BroadbandHandler implements Route {
 
     try {
       String broadbandJson = this.sendRequest(state, county);
+
+      if (broadbandJson == null) {
+        responseMap.put("result", "failure: error retrieving data");
+        return responseMap;
+      }
 
       if (broadbandJson.equals("Location not found")) {
         responseMap.put("failure", "Location not found");
@@ -103,7 +107,11 @@ public class BroadbandHandler implements Route {
             .build()
             .send(buildACSApiRequest, HttpResponse.BodyHandlers.ofString());
 
-    return this.convertJson(sentACSApiResponse.body());
+    if (!Objects.equals(sentACSApiResponse.body(), "")) {
+      return this.convertJson(sentACSApiResponse.body());
+    }
+
+    return null;
   }
 
   private String convertJson(String json) {

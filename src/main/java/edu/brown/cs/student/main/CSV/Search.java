@@ -14,38 +14,23 @@ public class Search {
    *
    * @param parsedData - the data parsed by the CSVParser
    * @param target - the value to search for
-   * @param columnSpec
-   * @param hasHeaders
-   * @param numColumns
    * @throws ArrayIndexOutOfBoundsException
    */
-  public Search(
-      List<List<String>> parsedData,
-      String target,
-      String columnSpec,
-      boolean hasHeaders,
-      int numColumns)
+  public Search(List<List<String>> parsedData, String target)
       throws ArrayIndexOutOfBoundsException {
     this.target = target.toLowerCase();
-    int columnIndex;
 
     this.parsedData = parsedData;
-
-    //    if (!columnSpec.equals("")) {
-    //      try {
-    //        columnIndex = Integer.parseInt(columnSpec);
-    //        this.search(columnIndex, numColumns);
-    //      } catch (NumberFormatException e) {
-    //        if (hasHeaders) {
-    //          this.search(columnSpec);
-    //        }
-    //      }
-    //    } else {
-    //      this.search();
-    //    }
-
   }
 
+  /**
+   * This method handles the actual calling of search
+   * @param target
+   * @param columnSpec
+   * @param numColumns
+   * @param hasHeaders
+   * @return
+   */
   public List<String> callSearch(
       String target, String columnSpec, int numColumns, boolean hasHeaders) {
     this.target = target;
@@ -71,7 +56,6 @@ public class Search {
     for (List<String> parsedDatum : this.parsedData) {
       for (int j = 0; j < parsedDatum.size(); j++) {
         if (parsedDatum.get(j).equalsIgnoreCase(this.target)) {
-          // this.printRow(parsedDatum);
           return parsedDatum;
         }
       }
@@ -80,7 +64,6 @@ public class Search {
     List<String> notFound = new ArrayList<>();
     notFound.add("Target was not found");
     return notFound;
-    // System.out.println("Target was not found");
   }
 
   /**

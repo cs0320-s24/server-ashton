@@ -59,11 +59,17 @@ public class SearchCSVHandler implements Route {
 
     List<List<String>> parsedData = this.handling.getParsedData();
 
-    Search search = new Search(parsedData, value, columnSpec, hasHeadersBool, numColumnsInt);
+    Search search = new Search(parsedData, value);
     List<String> row =
         search.callSearch(value.toLowerCase(), columnSpec, numColumnsInt, hasHeadersBool);
 
     responseMap.put("data", row);
+    responseMap.put("value", value);
+    if (columnSpec != null) {
+      responseMap.put("column to search for", columnSpec);
+    } else {
+      responseMap.put("column to search for", "column not specified");
+    }
     responseMap.put("result", "success");
     return responseMap;
   }

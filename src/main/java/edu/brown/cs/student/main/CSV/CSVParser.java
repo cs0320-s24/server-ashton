@@ -18,7 +18,6 @@ public class CSVParser<T> {
    *
    * @param fileReader - the reader object
    * @param creatorFromRow - the object used to convert each line into a row object
-   * @param numColumns - the number of columns expected in the csv
    */
   public CSVParser(Reader fileReader, CreatorFromRow<T> creatorFromRow) {
     this.fileReader = new BufferedReader(fileReader);
