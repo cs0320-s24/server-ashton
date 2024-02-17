@@ -3,7 +3,6 @@ package edu.brown.cs.student.main.server.handlers.broadband;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
-import edu.brown.cs.student.main.server.StateCountyInit;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,22 +12,20 @@ import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
-/**
- * The class that handles the broadband endpoint.
- */
+/** The class that handles the broadband endpoint. */
 public class BroadbandHandler implements Route {
 
   private final Map<String, String> stateToCode;
   private final StateCountyInit init;
 
   /**
-   * The constructor for broadband handler. It handles the initialization of state to state code information using the
-   * StateCountyInit object passed in.
+   * The constructor for broadband handler. It handles the initialization of state to state code
+   * information using the StateCountyInit object passed in.
+   *
    * @param init
    */
   public BroadbandHandler(StateCountyInit init) {
@@ -37,8 +34,10 @@ public class BroadbandHandler implements Route {
   }
 
   /**
-   * This handle method is overridden from the route interface to handle a specific call with this endpoint. It
-   * populates the response map with appropriate data based on what the user inputs for the broadband endpoint.
+   * This handle method is overridden from the route interface to handle a specific call with this
+   * endpoint. It populates the response map with appropriate data based on what the user inputs for
+   * the broadband endpoint.
+   *
    * @param request
    * @param response
    * @return
@@ -91,6 +90,7 @@ public class BroadbandHandler implements Route {
 
   /**
    * This method handle the sending of a request
+   *
    * @param state
    * @param county
    * @return
@@ -138,8 +138,9 @@ public class BroadbandHandler implements Route {
   }
 
   /**
-   * This takes in the Json object returned from the API call and converts it to the more readable format typically
-   * returned. Essentially creating the hashmap like format for a json.
+   * This takes in the Json object returned from the API call and converts it to the more readable
+   * format typically returned. Essentially creating the hashmap like format for a json.
+   *
    * @param json
    * @return
    */

@@ -11,15 +11,14 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
-/**
- * This class handles the loadcsv endpoint
- */
+/** This class handles the loadcsv endpoint */
 public class LoadCSVHandler implements Route {
 
   private final CSVHandling handling;
 
   /**
    * Takes in a handling object so that it can inform the other classes when the CSV has been parsed
+   *
    * @param handling
    */
   public LoadCSVHandler(CSVHandling handling) {
@@ -27,8 +26,9 @@ public class LoadCSVHandler implements Route {
   }
 
   /**
-   * This is the handle method for loadcsv. It essentially just stores the parsed csv in the handling class to be used
-   * by the other endpoints.
+   * This is the handle method for loadcsv. It essentially just stores the parsed csv in the
+   * handling class to be used by the other endpoints.
+   *
    * @param request
    * @param response
    * @return

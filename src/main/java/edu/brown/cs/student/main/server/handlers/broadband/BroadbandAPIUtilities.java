@@ -8,6 +8,7 @@ public class BroadbandAPIUtilities {
 
   /**
    * This method handles the deserialization of the census data into the Broadband class
+   *
    * @param broadbandJson
    * @return
    */

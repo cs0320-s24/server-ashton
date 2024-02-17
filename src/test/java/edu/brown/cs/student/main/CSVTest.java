@@ -1,15 +1,11 @@
 package edu.brown.cs.student.main;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import edu.brown.cs.student.main.server.handlers.CSVHandling.CSVHandling;
 import edu.brown.cs.student.main.server.handlers.CSVHandling.LoadCSVHandler;
 import edu.brown.cs.student.main.server.handlers.CSVHandling.SearchCSVHandler;
 import edu.brown.cs.student.main.server.handlers.CSVHandling.ViewCSVHandler;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import spark.Spark;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,14 +13,16 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import spark.Spark;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-public class CSVTesting {
+public class CSVTest {
 
   @BeforeAll
   public static void setup_before_everything() {
-    Spark.port(0);
     Logger.getLogger("").setLevel(Level.WARNING);
   }
 
@@ -57,7 +55,7 @@ public class CSVTesting {
     return clientConnection;
   }
 
-  private String getResponse (HttpURLConnection connection) throws IOException {
+  private String getResponse(HttpURLConnection connection) throws IOException {
     BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
     StringBuilder response = new StringBuilder();
     String inputLine;
@@ -124,5 +122,19 @@ public class CSVTesting {
     assertEquals(200, clientConnection.getResponseCode());
 
     assertEquals(this.getResponse(clientConnection), "{result=failure: no CSV loaded}");
+  }
+
+  @Test
+  public void testViewOnNewLoad() throws IOException {
+    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/stars/ten-star.csv");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    clientConnection = tryRequest("loadcsv?filepath=data/stars/simple.csv");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    clientConnection = tryRequest("viewcsv");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    assertEquals(this.getResponse(clientConnection), "{result=success,}");
   }
 }
