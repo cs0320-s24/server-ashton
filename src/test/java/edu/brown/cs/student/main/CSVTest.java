@@ -129,12 +129,146 @@ public class CSVTest {
     HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/stars/ten-star.csv");
     assertEquals(200, clientConnection.getResponseCode());
 
-    clientConnection = tryRequest("loadcsv?filepath=data/stars/simple.csv");
+    clientConnection = tryRequest("loadcsv?filepath=data/simple.csv");
     assertEquals(200, clientConnection.getResponseCode());
 
     clientConnection = tryRequest("viewcsv");
     assertEquals(200, clientConnection.getResponseCode());
 
-    assertEquals(this.getResponse(clientConnection), "{result=success,}");
+    assertEquals(
+        this.getResponse(clientConnection), "{result=success, data=[[1, 2, 3], [4, 5, 6]]}");
+  }
+
+  @Test
+  public void testSearchOnNewLoad() throws IOException {
+    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/stars/ten-star.csv");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    clientConnection = tryRequest("loadcsv?filepath=data/simple.csv");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    clientConnection = tryRequest("searchcsv?hasheaders=true&value=1&numcolumns=3");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    assertEquals(
+        this.getResponse(clientConnection),
+        "{result=success, data=[1, 2, 3], column to search for=column not specified, value=1}");
+  }
+
+  @Test
+  public void testSearchWithNoResult() throws IOException {
+    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/stars/ten-star.csv");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    clientConnection = tryRequest("loadcsv?filepath=data/simple.csv");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    clientConnection = tryRequest("searchcsv?hasheaders=true&value=45&numcolumns=3");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    assertEquals(
+        this.getResponse(clientConnection),
+        "{result=success, data=[Target was not found], column to search for=column not specified, value=45}");
+  }
+
+  @Test
+  public void testSearchWithNoHeaderSpecified() throws IOException {
+    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/simple.csv");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    clientConnection = tryRequest("searchcsv?value=45&numcolumns=3");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    assertEquals(
+        this.getResponse(clientConnection),
+        "{result=failure: specify whether or not there are headers}");
+  }
+
+  @Test
+  public void testSearchWithNumColumnsNotSpecified() throws IOException {
+    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/simple.csv");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    clientConnection = tryRequest("searchcsv?value=45&hasheaders=false");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    assertEquals(
+        this.getResponse(clientConnection), "{result=failure: specify the number of columns}");
+  }
+
+  @Test
+  public void testSearchWithNumValueNotSpecified() throws IOException {
+    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/simple.csv");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    clientConnection = tryRequest("searchcsv?&hasheaders=false&numcolumns=3");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    assertEquals(
+        this.getResponse(clientConnection), "{result=failure: no value to search for specified}");
+  }
+
+  @Test
+  public void testSearchWithImproperNumColumnsFormat() throws IOException {
+    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/simple.csv");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    clientConnection = tryRequest("searchcsv?value=4&hasheaders=false&numcolumns=3h&index=0");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    assertEquals(
+        this.getResponse(clientConnection), "{result=failure: improper integer formatting}");
+  }
+
+  @Test
+  public void testSearchWithImproperBooleanFormat() throws IOException {
+    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/simple.csv");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    clientConnection = tryRequest("searchcsv?value=4&hasheaders=falte&numcolumns=3&index=0");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    assertEquals(
+        this.getResponse(clientConnection), "{result=failure: improper boolean formatting}");
+  }
+
+  @Test
+  public void testSearchNotFoundWithColumnSpecified() throws IOException {
+    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/simple.csv");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    clientConnection = tryRequest("searchcsv?value=4&hasheaders=false&numcolumns=3&index=1");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    assertEquals(
+        this.getResponse(clientConnection),
+        "{result=success, data=[Target was not found], column to search for=1, value=4}");
+  }
+
+  @Test
+  public void testSearchFoundWithHeaderSpecified() throws IOException {
+    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/stars/ten-star.csv");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    clientConnection =
+        tryRequest("searchcsv?value=Sol&hasheaders=true&numcolumns=5&index=ProperName");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    assertEquals(
+        this.getResponse(clientConnection),
+        "{result=success, data=[0, Sol, 0, 0, 0], column to search for=ProperName, value=Sol}");
+  }
+
+  @Test
+  public void testSearchNotFoundWithHeaderSpecified() throws IOException {
+    HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/stars/ten-star.csv");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    clientConnection = tryRequest("searchcsv?value=Sol&hasheaders=true&numcolumns=5&index=StarID");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    assertEquals(
+        this.getResponse(clientConnection),
+        "{result=success, data=[Target was not found], column to search for=StarID, value=Sol}");
   }
 }

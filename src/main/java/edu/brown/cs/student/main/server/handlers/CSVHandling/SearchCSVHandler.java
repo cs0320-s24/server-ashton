@@ -48,10 +48,11 @@ public class SearchCSVHandler implements Route {
     if (hasHeaders == null) {
       responseMap.put("result", "failure: specify whether or not there are headers");
       return responseMap;
-    }
-
-    if (value == null) {
+    } else if (value == null) {
       responseMap.put("result", "failure: no value to search for specified");
+      return responseMap;
+    } else if (numColumns == null) {
+      responseMap.put("result", "failure: specify the number of columns");
       return responseMap;
     }
 
