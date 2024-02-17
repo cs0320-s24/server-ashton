@@ -37,13 +37,13 @@ public class SearchCSVHandler implements Route {
 
     Map<String, Object> responseMap = new HashMap<>();
 
-    if (hasHeaders == null) {
-      responseMap.put("result", "failure: specify whether or not there are headers");
+    if (!this.handling.isCSVLoaded()) {
+      responseMap.put("result", "failure: no CSV loaded");
       return responseMap;
     }
 
-    if (!this.handling.isCSVLoaded()) {
-      responseMap.put("result", "failure: no CSV loaded");
+    if (hasHeaders == null) {
+      responseMap.put("result", "failure: specify whether or not there are headers");
       return responseMap;
     }
 

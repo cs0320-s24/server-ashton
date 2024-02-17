@@ -16,7 +16,7 @@ import spark.Route;
  */
 public class LoadCSVHandler implements Route {
 
-  private CSVHandling handling;
+  private final CSVHandling handling;
 
   /**
    * Takes in a handling object so that it can inform the other classes when the CSV has been parsed
@@ -37,21 +37,28 @@ public class LoadCSVHandler implements Route {
   public Object handle(Request request, Response response) {
     String filepath = request.queryParams("filepath");
 
-    FileReader fileReader = null;
+    Map<Object, String> responseMap = new HashMap<>();
 
-    Map<String, Object> responseMap = new HashMap<>();
+    if (filepath == null) {
+      responseMap.put("result", "failure: no filepath specified");
+      return responseMap;
+    }
+
+    FileReader fileReader = null;
 
     try {
       fileReader = new FileReader(filepath);
     } catch (FileNotFoundException e) {
-      System.out.println("file not found");
+      responseMap.put("result", "failure: failed to find file");
+      return responseMap;
     }
     CSVParser<List<String>> parser = new CSVParser<>(fileReader, new Creator());
     try {
       List<List<String>> parsedData = parser.parse();
       this.handling.setParsedData(parsedData);
     } catch (Exception e) {
-      System.out.println("idk yet");
+      responseMap.put("result", "failure: error parsing");
+      return responseMap;
     }
 
     responseMap.put("result", "success");
