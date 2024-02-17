@@ -45,6 +45,12 @@ public class CSVTest {
     Spark.awaitStop();
   }
 
+  /**
+   * Helper function for sending a request
+   * @param apiCall
+   * @return
+   * @throws IOException
+   */
   private static HttpURLConnection tryRequest(String apiCall) throws IOException {
     URL requestURL = new URL("http://localhost:" + Spark.port() + "/" + apiCall);
     HttpURLConnection clientConnection = (HttpURLConnection) requestURL.openConnection();
@@ -55,6 +61,12 @@ public class CSVTest {
     return clientConnection;
   }
 
+  /**
+   * Helper function for converting the response to a string
+   * @param connection
+   * @return
+   * @throws IOException
+   */
   private String getResponse(HttpURLConnection connection) throws IOException {
     BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
     StringBuilder response = new StringBuilder();
@@ -67,6 +79,10 @@ public class CSVTest {
     return response.toString();
   }
 
+  /**
+   * Test for connection success
+   * @throws IOException
+   */
   @Test
   public void testConnection() throws IOException {
     HttpURLConnection clientConnection = tryRequest("loadcsv");
@@ -84,6 +100,10 @@ public class CSVTest {
     clientConnection.disconnect();
   }
 
+  /**
+   * Test for loading a csv
+   * @throws IOException
+   */
   @Test
   public void testLoadBasic() throws IOException {
     HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/stars/ten-star.csv");
@@ -92,6 +112,10 @@ public class CSVTest {
     assertEquals(this.getResponse(clientConnection), "{result=success}");
   }
 
+  /**
+   * Test for loading an invalid file path
+   * @throws IOException
+   */
   @Test
   public void testInvalidFilepath() throws IOException {
     HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/stars/tenstar.csv");
@@ -100,6 +124,10 @@ public class CSVTest {
     assertEquals(this.getResponse(clientConnection), "{result=failure: failed to find file}");
   }
 
+  /**
+   * Test for not specifying file path when loading
+   * @throws IOException
+   */
   @Test
   public void testNoFilepath() throws IOException {
     HttpURLConnection clientConnection = tryRequest("loadcsv");
@@ -108,6 +136,10 @@ public class CSVTest {
     assertEquals(this.getResponse(clientConnection), "{result=failure: no filepath specified}");
   }
 
+  /**
+   * Test for trying to view without loading
+   * @throws IOException
+   */
   @Test
   public void testViewNoLoad() throws IOException {
     HttpURLConnection clientConnection = tryRequest("viewcsv");
@@ -116,6 +148,10 @@ public class CSVTest {
     assertEquals(this.getResponse(clientConnection), "{result=failure: no CSV loaded}");
   }
 
+  /**
+   * Test for trying to search without loading
+   * @throws IOException
+   */
   @Test
   public void testSearchNoLoad() throws IOException {
     HttpURLConnection clientConnection = tryRequest("searchcsv");
@@ -124,6 +160,10 @@ public class CSVTest {
     assertEquals(this.getResponse(clientConnection), "{result=failure: no CSV loaded}");
   }
 
+  /**
+   * Test for viewing after a second load
+   * @throws IOException
+   */
   @Test
   public void testViewOnNewLoad() throws IOException {
     HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/stars/ten-star.csv");
@@ -139,6 +179,10 @@ public class CSVTest {
         this.getResponse(clientConnection), "{result=success, data=[[1, 2, 3], [4, 5, 6]]}");
   }
 
+  /**
+   * Test for searching after a second load
+   * @throws IOException
+   */
   @Test
   public void testSearchOnNewLoad() throws IOException {
     HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/stars/ten-star.csv");
@@ -155,6 +199,10 @@ public class CSVTest {
         "{result=success, data=[1, 2, 3], column to search for=column not specified, value=1}");
   }
 
+  /**
+   * Test for running a search without finding the target
+   * @throws IOException
+   */
   @Test
   public void testSearchWithNoResult() throws IOException {
     HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/stars/ten-star.csv");
@@ -171,6 +219,10 @@ public class CSVTest {
         "{result=success, data=[Target was not found], column to search for=column not specified, value=45}");
   }
 
+  /**
+   * Test for running a search without specifying if there are headers
+   * @throws IOException
+   */
   @Test
   public void testSearchWithNoHeaderSpecified() throws IOException {
     HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/simple.csv");
@@ -184,6 +236,10 @@ public class CSVTest {
         "{result=failure: specify whether or not there are headers}");
   }
 
+  /**
+   * Test for running a search without specifying number of columns
+   * @throws IOException
+   */
   @Test
   public void testSearchWithNumColumnsNotSpecified() throws IOException {
     HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/simple.csv");
@@ -196,6 +252,10 @@ public class CSVTest {
         this.getResponse(clientConnection), "{result=failure: specify the number of columns}");
   }
 
+  /**
+   * Test for running a search without specifying a value to search for
+   * @throws IOException
+   */
   @Test
   public void testSearchWithNumValueNotSpecified() throws IOException {
     HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/simple.csv");
@@ -208,6 +268,10 @@ public class CSVTest {
         this.getResponse(clientConnection), "{result=failure: no value to search for specified}");
   }
 
+  /**
+   * Test for running a search with specifying the number of columns as a non integer
+   * @throws IOException
+   */
   @Test
   public void testSearchWithImproperNumColumnsFormat() throws IOException {
     HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/simple.csv");
@@ -220,6 +284,10 @@ public class CSVTest {
         this.getResponse(clientConnection), "{result=failure: improper integer formatting}");
   }
 
+  /**
+   * Test for running a search without specifying a boolean value for hasheaders
+   * @throws IOException
+   */
   @Test
   public void testSearchWithImproperBooleanFormat() throws IOException {
     HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/simple.csv");
@@ -232,6 +300,10 @@ public class CSVTest {
         this.getResponse(clientConnection), "{result=failure: improper boolean formatting}");
   }
 
+  /**
+   * Test for running a search where the value is not found because of the column specified
+   * @throws IOException
+   */
   @Test
   public void testSearchNotFoundWithColumnSpecified() throws IOException {
     HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/simple.csv");
@@ -245,6 +317,10 @@ public class CSVTest {
         "{result=success, data=[Target was not found], column to search for=1, value=4}");
   }
 
+  /**
+   * Test for running a search without a specific header
+   * @throws IOException
+   */
   @Test
   public void testSearchFoundWithHeaderSpecified() throws IOException {
     HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/stars/ten-star.csv");
@@ -259,6 +335,10 @@ public class CSVTest {
         "{result=success, data=[0, Sol, 0, 0, 0], column to search for=ProperName, value=Sol}");
   }
 
+  /**
+   * Test for running a search where the value is not found because of the header specified
+   * @throws IOException
+   */
   @Test
   public void testSearchNotFoundWithHeaderSpecified() throws IOException {
     HttpURLConnection clientConnection = tryRequest("loadcsv?filepath=data/stars/ten-star.csv");
