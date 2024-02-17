@@ -4,12 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import edu.brown.cs.student.main.server.handlers.broadband.BroadbandHandler;
 import edu.brown.cs.student.main.server.handlers.broadband.StateCountyInit;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.AfterEach;
@@ -39,6 +40,7 @@ public class ACSTest {
 
   /**
    * Helper function for making a request to the API
+   *
    * @param apiCall
    * @return
    * @throws IOException
@@ -55,6 +57,7 @@ public class ACSTest {
 
   /**
    * Helper function for converting the response to a string
+   *
    * @param connection
    * @return
    * @throws IOException
@@ -72,7 +75,20 @@ public class ACSTest {
   }
 
   /**
+   * Helper function for getting the time of the query
+   *
+   * @return
+   */
+  private String getTime() {
+    LocalDateTime currentDateTime = LocalDateTime.now();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm yyyy-MM-dd");
+    String formattedDateTime = currentDateTime.format(formatter);
+    return formattedDateTime;
+  }
+
+  /**
    * Test for testing for successful connection
+   *
    * @throws IOException
    */
   @Test
@@ -86,6 +102,7 @@ public class ACSTest {
 
   /**
    * Test for testing for unsuccessful connection
+   *
    * @throws IOException
    */
   @Test
@@ -97,5 +114,25 @@ public class ACSTest {
     clientConnection.disconnect();
   }
 
+  @Test
+  public void testBasicQuery() throws IOException {
+    HttpURLConnection clientConnection =
+        tryRequest(
+            "broadband?state=South%20Carolina&county=York" + "%20County,%20South%20Carolina");
+    assertEquals(200, clientConnection.getResponseCode());
+    assertEquals(
+        this.getResponse(clientConnection),
+        "{result=success, Time of Query="
+            + this.getTime()
+            + ", Broadband Access=The estimated broadband access in York County, "
+            + "South Carolina is 91.6 percent}");
+  }
 
+  @Test
+  public void testLocationNotFound() throws IOException {
+    HttpURLConnection clientConnection =
+        tryRequest("broadband?state=%20Carolina&county=York" + "%20County,%20South%20Carolina");
+    assertEquals(200, clientConnection.getResponseCode());
+    assertEquals(this.getResponse(clientConnection), "{failure=Location not found}");
+  }
 }

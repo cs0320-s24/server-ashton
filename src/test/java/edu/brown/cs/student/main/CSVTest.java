@@ -47,6 +47,7 @@ public class CSVTest {
 
   /**
    * Helper function for sending a request
+   *
    * @param apiCall
    * @return
    * @throws IOException
@@ -63,6 +64,7 @@ public class CSVTest {
 
   /**
    * Helper function for converting the response to a string
+   *
    * @param connection
    * @return
    * @throws IOException
@@ -81,6 +83,7 @@ public class CSVTest {
 
   /**
    * Test for connection success
+   *
    * @throws IOException
    */
   @Test
@@ -102,6 +105,7 @@ public class CSVTest {
 
   /**
    * Test for loading a csv
+   *
    * @throws IOException
    */
   @Test
@@ -114,6 +118,7 @@ public class CSVTest {
 
   /**
    * Test for loading an invalid file path
+   *
    * @throws IOException
    */
   @Test
@@ -126,6 +131,7 @@ public class CSVTest {
 
   /**
    * Test for not specifying file path when loading
+   *
    * @throws IOException
    */
   @Test
@@ -138,6 +144,7 @@ public class CSVTest {
 
   /**
    * Test for trying to view without loading
+   *
    * @throws IOException
    */
   @Test
@@ -150,6 +157,7 @@ public class CSVTest {
 
   /**
    * Test for trying to search without loading
+   *
    * @throws IOException
    */
   @Test
@@ -162,6 +170,7 @@ public class CSVTest {
 
   /**
    * Test for viewing after a second load
+   *
    * @throws IOException
    */
   @Test
@@ -181,6 +190,7 @@ public class CSVTest {
 
   /**
    * Test for searching after a second load
+   *
    * @throws IOException
    */
   @Test
@@ -201,6 +211,7 @@ public class CSVTest {
 
   /**
    * Test for running a search without finding the target
+   *
    * @throws IOException
    */
   @Test
@@ -221,6 +232,7 @@ public class CSVTest {
 
   /**
    * Test for running a search without specifying if there are headers
+   *
    * @throws IOException
    */
   @Test
@@ -238,6 +250,7 @@ public class CSVTest {
 
   /**
    * Test for running a search without specifying number of columns
+   *
    * @throws IOException
    */
   @Test
@@ -254,6 +267,7 @@ public class CSVTest {
 
   /**
    * Test for running a search without specifying a value to search for
+   *
    * @throws IOException
    */
   @Test
@@ -270,6 +284,7 @@ public class CSVTest {
 
   /**
    * Test for running a search with specifying the number of columns as a non integer
+   *
    * @throws IOException
    */
   @Test
@@ -286,6 +301,7 @@ public class CSVTest {
 
   /**
    * Test for running a search without specifying a boolean value for hasheaders
+   *
    * @throws IOException
    */
   @Test
@@ -302,6 +318,7 @@ public class CSVTest {
 
   /**
    * Test for running a search where the value is not found because of the column specified
+   *
    * @throws IOException
    */
   @Test
@@ -319,6 +336,7 @@ public class CSVTest {
 
   /**
    * Test for running a search without a specific header
+   *
    * @throws IOException
    */
   @Test
@@ -337,6 +355,7 @@ public class CSVTest {
 
   /**
    * Test for running a search where the value is not found because of the header specified
+   *
    * @throws IOException
    */
   @Test

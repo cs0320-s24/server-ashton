@@ -74,7 +74,7 @@ public class BroadbandHandler implements Route {
       responseMap.put("Broadband Access", broadband);
 
       LocalDateTime currentDateTime = LocalDateTime.now();
-      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss yyyy-MM-dd");
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm yyyy-MM-dd");
       String formattedDateTime = currentDateTime.format(formatter);
 
       responseMap.put("Time of Query", formattedDateTime);
