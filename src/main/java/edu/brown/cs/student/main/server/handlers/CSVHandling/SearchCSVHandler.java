@@ -12,10 +12,22 @@ public class SearchCSVHandler implements Route {
 
   private CSVHandling handling;
 
+  /**
+   * This class handles the searchcsv endpoint. It takes in an instance of the handling class that essentially stores
+   * the parsed data and ensures that a csv has been loaded before viewing or searching can take place.
+   * @param handling
+   */
   public SearchCSVHandler(CSVHandling handling) {
     this.handling = handling;
   }
 
+  /**
+   * This is the handle method for the searchcsv endpoint. It handles the creation of the response map based on the
+   * user specifications for what to search for in the CSV.
+   * @param request
+   * @param response
+   * @return
+   */
   @Override
   public Object handle(Request request, Response response) {
     String value = request.queryParams("value");

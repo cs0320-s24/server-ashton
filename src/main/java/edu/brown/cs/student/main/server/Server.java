@@ -11,16 +11,17 @@ import spark.Spark;
 
 /**
  * Top-level class for this demo. Contains the main() method which starts Spark and runs the various
- * handlers (2).
- *
- * <p>Notice that the OrderHandler takes in a state (menu) that can be shared if we extended the
- * restaurant They need to share state (a menu). This would be a great opportunity to use dependency
- * injection. If we needed more endpoints, more functionality classes, etc. we could make sure they
- * all had the same shared state.
- */
+ * handlers (4).
+*/
 public class Server {
+
+  /**
+   * The main method for this program. It handles the four endpoint connections and sets up the initial port.
+   * It also displays a method with a link to the server.
+   * @param args
+   */
   public static void main(String[] args) {
-    int port = 3232;
+    int port = 2004;
     Spark.port(port);
 
     after(

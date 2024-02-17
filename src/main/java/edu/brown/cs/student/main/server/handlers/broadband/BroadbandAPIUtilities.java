@@ -6,6 +6,11 @@ import java.io.IOException;
 
 public class BroadbandAPIUtilities {
 
+  /**
+   * This method handles the deserialization of the census data into the Broadband class
+   * @param broadbandJson
+   * @return
+   */
   public static Broadband deserializeCensus(String broadbandJson) {
     try {
       Moshi moshi = new Moshi.Builder().build();

@@ -1,6 +1,5 @@
 package edu.brown.cs.student.main.server.handlers.broadband;
 
-import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
@@ -19,16 +18,31 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+/**
+ * The class that handles the broadband endpoint.
+ */
 public class BroadbandHandler implements Route {
 
   private final Map<String, String> stateToCode;
   private final StateCountyInit init;
 
+  /**
+   * The constructor for broadband handler. It handles the initialization of state to state code information using the
+   * StateCountyInit object passed in.
+   * @param init
+   */
   public BroadbandHandler(StateCountyInit init) {
     this.init = init;
     this.stateToCode = this.init.getMap();
   }
 
+  /**
+   * This handle method is overridden from the route interface to handle a specific call with this endpoint. It
+   * populates the response map with appropriate data based on what the user inputs for the broadband endpoint.
+   * @param request
+   * @param response
+   * @return
+   */
   @Override
   public Object handle(Request request, Response response) {
     // gets the query params for state and county
@@ -75,6 +89,15 @@ public class BroadbandHandler implements Route {
     return responseMap;
   }
 
+  /**
+   * This method handle the sending of a request
+   * @param state
+   * @param county
+   * @return
+   * @throws URISyntaxException
+   * @throws IOException
+   * @throws InterruptedException
+   */
   private String sendRequest(String state, String county)
       throws URISyntaxException, IOException, InterruptedException {
     String stateCode = this.stateToCode.get(state);
@@ -114,6 +137,12 @@ public class BroadbandHandler implements Route {
     return null;
   }
 
+  /**
+   * This takes in the Json object returned from the API call and converts it to the more readable format typically
+   * returned. Essentially creating the hashmap like format for a json.
+   * @param json
+   * @return
+   */
   private String convertJson(String json) {
     try {
       Moshi moshi = new Moshi.Builder().build();

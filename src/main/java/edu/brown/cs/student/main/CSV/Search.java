@@ -24,15 +24,15 @@ public class Search {
   }
 
   /**
-   * This method handles the actual calling of search
+   * This method handles the actual calling of search depending on the data passed in. There are three different
+   * search implementations depending on user specifications, so this decides which to call
    * @param target
    * @param columnSpec
    * @param numColumns
    * @param hasHeaders
    * @return
    */
-  public List<String> callSearch(
-      String target, String columnSpec, int numColumns, boolean hasHeaders) {
+  public List<String> callSearch(String target, String columnSpec, int numColumns, boolean hasHeaders) {
     this.target = target;
     int columnIndex;
     if (columnSpec != null) {
