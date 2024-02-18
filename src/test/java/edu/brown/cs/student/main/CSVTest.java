@@ -2,7 +2,7 @@ package edu.brown.cs.student.main;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import edu.brown.cs.student.main.server.handlers.CSVHandling.CSVHandling;
+import edu.brown.cs.student.main.server.handlers.CSVHandling.CSVData;
 import edu.brown.cs.student.main.server.handlers.CSVHandling.LoadCSVHandler;
 import edu.brown.cs.student.main.server.handlers.CSVHandling.SearchCSVHandler;
 import edu.brown.cs.student.main.server.handlers.CSVHandling.ViewCSVHandler;
@@ -28,7 +28,7 @@ public class CSVTest {
 
   @BeforeEach
   public void setup() {
-    CSVHandling csvHandler = new CSVHandling(null);
+    CSVData csvHandler = new CSVData(null);
 
     Spark.get("loadcsv", new LoadCSVHandler(csvHandler));
     Spark.get("viewcsv", new ViewCSVHandler(csvHandler));

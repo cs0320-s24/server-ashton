@@ -2,13 +2,13 @@ package edu.brown.cs.student.main.server;
 
 import static spark.Spark.after;
 
-import edu.brown.cs.student.main.server.handlers.CSVHandling.CSVHandling;
+import edu.brown.cs.student.main.server.handlers.CSVHandling.CSVData;
 import edu.brown.cs.student.main.server.handlers.CSVHandling.LoadCSVHandler;
 import edu.brown.cs.student.main.server.handlers.CSVHandling.SearchCSVHandler;
 import edu.brown.cs.student.main.server.handlers.CSVHandling.ViewCSVHandler;
-import edu.brown.cs.student.main.server.handlers.broadband.ACSData;
+import edu.brown.cs.student.main.server.handlers.broadband.data.ACSData;
 import edu.brown.cs.student.main.server.handlers.broadband.BroadbandHandler;
-import edu.brown.cs.student.main.server.handlers.broadband.StateCountyInit;
+import edu.brown.cs.student.main.server.handlers.broadband.data.StateCountyInit;
 import spark.Spark;
 
 /**
@@ -33,7 +33,7 @@ public class Server {
           response.header("Access-Control-Allow-Methods", "*");
         });
 
-    CSVHandling csvHandler = new CSVHandling(null);
+    CSVData csvHandler = new CSVData(null);
 
     Spark.get("broadband", new BroadbandHandler(new ACSData(new StateCountyInit())));
     Spark.get("loadcsv", new LoadCSVHandler(csvHandler));

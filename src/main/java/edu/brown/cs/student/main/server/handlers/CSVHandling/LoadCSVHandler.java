@@ -14,14 +14,14 @@ import spark.Route;
 /** This class handles the loadcsv endpoint */
 public class LoadCSVHandler implements Route {
 
-  private final CSVHandling handling;
+  private final CSVData handling;
 
   /**
    * Takes in a handling object so that it can inform the other classes when the CSV has been parsed
    *
    * @param handling
    */
-  public LoadCSVHandler(CSVHandling handling) {
+  public LoadCSVHandler(CSVData handling) {
     this.handling = handling;
   }
 

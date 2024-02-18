@@ -9,14 +9,14 @@ import spark.Route;
 /** This class handles the viewcsv endpoint */
 public class ViewCSVHandler implements Route {
 
-  private final CSVHandling handling;
+  private final CSVData handling;
 
   /**
    * Takes in a handling object so that it can inform the other classes when the CSV has been parsed
    *
    * @param handling
    */
-  public ViewCSVHandler(CSVHandling handling) {
+  public ViewCSVHandler(CSVData handling) {
     this.handling = handling;
   }
 

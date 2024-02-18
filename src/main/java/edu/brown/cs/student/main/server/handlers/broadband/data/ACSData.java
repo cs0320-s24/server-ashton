@@ -1,8 +1,9 @@
-package edu.brown.cs.student.main.server.handlers.broadband;
+package edu.brown.cs.student.main.server.handlers.broadband.data;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;

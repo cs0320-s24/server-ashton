@@ -10,7 +10,7 @@ import spark.Route;
 
 public class SearchCSVHandler implements Route {
 
-  private CSVHandling handling;
+  private CSVData handling;
 
   /**
    * This class handles the searchcsv endpoint. It takes in an instance of the handling class that
@@ -19,7 +19,7 @@ public class SearchCSVHandler implements Route {
    *
    * @param handling
    */
-  public SearchCSVHandler(CSVHandling handling) {
+  public SearchCSVHandler(CSVData handling) {
     this.handling = handling;
   }
 

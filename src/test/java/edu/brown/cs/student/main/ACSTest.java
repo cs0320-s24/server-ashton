@@ -2,10 +2,10 @@ package edu.brown.cs.student.main;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import edu.brown.cs.student.main.server.handlers.broadband.ACSData;
+import edu.brown.cs.student.main.server.handlers.broadband.data.ACSData;
 import edu.brown.cs.student.main.server.handlers.broadband.BroadbandHandler;
-import edu.brown.cs.student.main.server.handlers.broadband.MockACSData;
-import edu.brown.cs.student.main.server.handlers.broadband.StateCountyInit;
+import edu.brown.cs.student.main.server.handlers.broadband.data.MockACSData;
+import edu.brown.cs.student.main.server.handlers.broadband.data.StateCountyInit;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

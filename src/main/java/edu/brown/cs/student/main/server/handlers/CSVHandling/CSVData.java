@@ -3,7 +3,7 @@ package edu.brown.cs.student.main.server.handlers.CSVHandling;
 import java.util.List;
 
 /** This is a utility class to tell the csv related endpoints about the status of the CSV */
-public class CSVHandling {
+public class CSVData {
 
   private List<List<String>> parsedData;
 
@@ -12,7 +12,7 @@ public class CSVHandling {
    *
    * @param parsedData
    */
-  public CSVHandling(List<List<String>> parsedData) {
+  public CSVData(List<List<String>> parsedData) {
     this.parsedData = parsedData;
   }
 
@@ -41,7 +41,6 @@ public class CSVHandling {
    * @return
    */
   public List<List<String>> getParsedData() {
-    List<List<String>> parsedDataCopy = this.parsedData;
-    return parsedDataCopy;
+    return List.copyOf(this.parsedData);
   }
 }
